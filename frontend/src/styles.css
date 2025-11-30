@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* small design tokens */
+:root {
+  --app-max: 1100px;
+}
+
+/* optional small helper */
+.container {
+  max-width: var(--app-max);
+}
