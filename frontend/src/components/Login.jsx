@@ -11,6 +11,7 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [remember, setRemember] = useState(false);
 
   async function submit(e) {
     e && e.preventDefault();
@@ -22,18 +23,18 @@ export default function Login({ onLogin }) {
 
     setLoading(true);
     try {
-      if (mode === 'login') {
+        if (mode === 'login') {
         const res = await API.post('/auth/login', { email, password });
         const { token, user } = res.data;
         if (!token) throw new Error('No token returned');
-        setAuthToken(token);
+        setAuthToken(token, remember);
         if (typeof onLogin === 'function') onLogin(token, user);
       } else {
         // signup
         const res = await API.post('/auth/signup', { name, email, password, role });
         const { token, user } = res.data;
         if (!token) throw new Error('No token returned');
-        setAuthToken(token);
+        setAuthToken(token, remember);
         if (typeof onLogin === 'function') onLogin(token, user);
       }
     } catch (err) {
@@ -87,6 +88,11 @@ export default function Login({ onLogin }) {
             {mode === 'login' ? 'Create account' : 'Have an account? Login'}
           </button>
         </div>
+
+        <label className="inline-flex items-center gap-2 text-sm mt-2">
+          <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)} />
+          <span>Remember me on this device</span>
+        </label>
       </form>
 
       <div className="text-xs text-muted mt-3">

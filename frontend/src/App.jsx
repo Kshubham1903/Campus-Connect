@@ -21,13 +21,18 @@ export default function App() {
 
   useEffect(() => {
     async function init() {
-      const token = getSavedToken();
-      if (!token) {
+      // Do not auto-login from persistent storage. We only allow auto-login
+      // from sessionStorage (active browser session). This prevents the app
+      // from automatically opening as the last logged-in user when the site
+      // is opened fresh.
+      const sessionToken = (typeof sessionStorage !== 'undefined') ? sessionStorage.getItem('mc_token') : null;
+      if (!sessionToken) {
+        // Do not read localStorage token here so user sees Home as logged-out by default.
         setAuthLoading(false);
         return;
       }
 
-      setAuthToken(token);
+      setAuthToken(sessionToken);
       try {
         const res = await API.get('/auth/me');
         setUser(res.data.user);
