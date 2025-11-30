@@ -14,6 +14,10 @@ const Request = require('./models/Request');
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -72,11 +76,23 @@ app.post('/api/auth/login', async (req, res) => {
 // ----------------- Seniors list -----------------
 app.get('/api/seniors', async (req, res) => {
   try {
-    const seniors = await User.find({ role: 'SENIOR', verified: true }).select('name tags verified email');
-    res.json(seniors);
+    // return all users who have role 'SENIOR'
+    // adjust query if you only want verified: { role: 'SENIOR', verified: true }
+    const seniors = await User.find({ role: 'SENIOR' })
+      .select('-passwordHash')      // don't return password
+      .sort({ name: 1 })
+      .lean();
+
+    // Normalize avatarUrl to have leading slash if stored differently (optional)
+    const normalized = seniors.map(s => ({
+      ...s,
+      avatarUrl: s.avatarUrl ? (s.avatarUrl.startsWith('/') ? s.avatarUrl : `/${s.avatarUrl}`) : null
+    }));
+
+    return res.json(normalized); // returns array directly
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'server error' });
+    console.error('GET /api/seniors err', err);
+    return res.status(500).json({ error: 'server error' });
   }
 });
 
@@ -169,6 +185,19 @@ app.get('/api/chats/:id/messages', auth, async (req, res) => {
     res.status(500).json({ error: 'server error' });
   }
 });
+
+// GET /api/auth/me  -> returns current user
+app.get('/api/auth/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-passwordHash');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    console.error('GET /auth/me', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
 
 // GET /api/chats  - list chats for signed-in user (with partner info and last message)
 app.get('/api/chats', auth, async (req, res) => {
@@ -292,6 +321,79 @@ io.on('connection', (socket) => {
     // optional: console.log('disconnect', socket.id)
   });
 });
+
+
+
+// Ensure uploads dir exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
+// serve uploaded files
+app.use('/uploads', express.static(uploadsDir));
+
+// multer storage config
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    // keep unique name: timestamp + original name
+    const name = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, name);
+  }
+});
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } }); // 2MB limit
+
+// POST /api/users/me/avatar  - upload avatar for current logged-in user
+app.post('/api/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const userId = req.user.id;
+    // build public URL for client access
+    const avatarPath = `/uploads/${req.file.filename}`;
+
+    const user = await User.findByIdAndUpdate(userId, { avatarUrl: avatarPath }, { new: true }).select('-passwordHash');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json({ user, avatarUrl: avatarPath });
+  } catch (err) {
+    console.error('avatar upload err', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+
+//
+// Update current user's profile
+app.put('/api/users/me', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, bio, tags } = req.body;
+
+    // normalize tags: accept array or comma-separated string
+    let tagsArr = [];
+    if (Array.isArray(tags)) {
+      tagsArr = tags.map(t => String(t).trim()).filter(Boolean);
+    } else if (typeof tags === 'string') {
+      tagsArr = tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
+
+    const update = {};
+    if (typeof name === 'string') update.name = name.trim();
+    if (typeof bio === 'string') update.bio = bio.trim();
+    if (tagsArr.length) update.tags = tagsArr;
+    if (tags && tagsArr.length === 0) update.tags = []; // allow clearing tags
+
+    const user = await User.findByIdAndUpdate(userId, { $set: update }, { new: true }).select('-passwordHash');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    return res.json({ user });
+  } catch (err) {
+    console.error('PUT /api/users/me err', err);
+    return res.status(500).json({ error: 'server error' });
+  }
+});
+
 
 // start server
 const PORT = process.env.PORT || 5000;

@@ -1,82 +1,115 @@
 // frontend/src/components/Navbar.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Menu, LogOut, User, Bell } from 'lucide-react';
-import { setAuthToken } from '../api';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const ref = useRef();
-
-  useEffect(() => {
-    function onDoc(e) {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener('click', onDoc);
-    return () => document.removeEventListener('click', onDoc);
-  }, []);
-
-  function handleLogout() {
-    setAuthToken(null);
-    if (typeof onLogout === 'function') onLogout();
-    window.location.href = '/login';
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full bg-white/70 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-      <div className="mx-auto max-w-[var(--max-w)] px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button onClick={()=>navigate('/')} className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary to-tealSoft text-white flex items-center justify-center font-bold shadow-soft">CC</div>
-            <div className="hidden sm:block">
-              <div className="text-lg font-semibold leading-none">CampusConnect</div>
-              <div className="text-xs text-muted">Connect — Learn — Grow</div>
-            </div>
-          </button>
-        </div>
+    <header className="
+      w-full 
+      bg-white 
+      border-b border-gray-100 
+      sticky top-0 z-50 
+      backdrop-blur-sm
+    ">
+      {/* WIDTH & ALIGNMENT FIXED */}
+      <div className="
+        mx-auto 
+        max-w-[1600px] 
+        px-6 md:px-10 lg:px-16 xl:px-24 
+        h-20 
+        flex items-center justify-between
+      ">
+        
+        {/* LEFT LOGO */}
+        <Link to="/" className="flex items-center gap-3">
+          <div className="
+            w-11 h-11 
+            rounded-xl 
+            bg-gradient-to-br from-primary to-tealSoft 
+            flex items-center justify-center 
+            text-white text-lg font-semibold
+          ">
+            CC
+          </div>
+          <div className="leading-tight">
+            <div className="text-lg font-bold text-slate-800">CampusConnect</div>
+            <div className="text-xs text-gray-500">Connect — Learn — Grow</div>
+          </div>
+        </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <button onClick={()=>navigate('/')} className="hover:text-primary">Home</button>
-          {user && <button onClick={()=>navigate('/dashboard')} className="hover:text-primary">Dashboard</button>}
-          {user && <button onClick={()=>navigate('/junior')} className="hover:text-primary">My Chats</button>}
+        {/* MIDDLE LINKS */}
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <Link to="/" className="text-slate-700 hover:text-primary transition">Home</Link>
+
+          {user && user.role === "SENIOR" && (
+            <Link to="/dashboard" className="text-slate-700 hover:text-primary transition">
+              Dashboard
+            </Link>
+          )}
+
+          {user && (
+            <Link to="/mychats" className="text-slate-700 hover:text-primary transition">
+              My Chats
+            </Link>
+          )}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button title="Notifications" className="p-2 rounded-md hover:bg-gray-50">
-            <Bell className="w-5 h-5 text-gray-600" />
-          </button>
+        {/* RIGHT SIDE USER SECTION */}
+        <div className="flex items-center gap-4">
 
-          <div className="relative" ref={ref}>
-            <button onClick={()=>setOpen(o=>!o)} className="flex items-center gap-3 border rounded-xl px-3 py-1 hover:shadow-sm">
-              <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-700">
-                {user?.name ? user.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase() : 'G'}
-              </div>
-              <div className="hidden sm:block text-left">
-                <div className="text-sm font-medium">{user?.name || 'Guest'}</div>
-                <div className="text-xs text-muted">{user?.email || ''}</div>
-              </div>
-              <Menu className="w-4 h-4 text-gray-500" />
+          {/* If NOT logged in */}
+          {!user && (
+            <button
+              onClick={() => navigate("/login")}
+              className="px-4 py-2 rounded-xl border bg-white hover:bg-gray-50 text-sm font-medium"
+            >
+              Login
             </button>
+          )}
 
-            {open && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-soft p-2 z-50">
-                {user ? (
-                  <>
-                    <button onClick={()=>{ navigate('/profile'); setOpen(false); }} className="w-full text-left px-2 py-2 rounded hover:bg-gray-50 flex items-center gap-2">
-                      <User className="w-4 h-4" /> Profile
-                    </button>
-                    <div className="border-t my-1" />
-                    <button onClick={handleLogout} className="w-full text-left px-2 py-2 rounded hover:bg-gray-50 flex items-center gap-2 text-red-600">
-                      <LogOut className="w-4 h-4" /> Logout
-                    </button>
-                  </>
-                ) : (
-                  <button onClick={()=>{ navigate('/login'); setOpen(false); }} className="w-full text-left px-2 py-2 rounded hover:bg-gray-50">Login / Signup</button>
-                )}
-              </div>
-            )}
-          </div>
+          {/* If logged in */}
+          {user && (
+            <div className="relative">
+              <button
+                className="flex items-center gap-3 px-4 py-2 rounded-xl border bg-white hover:bg-gray-50"
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                <div className="
+                  w-9 h-9 
+                  rounded-full 
+                  bg-slate-200 
+                  flex items-center justify-center 
+                  text-sm font-medium text-slate-600
+                ">
+                  {user.name ? user.name[0].toUpperCase() : "U"}
+                </div>
+                <div className="text-sm text-slate-700">{user.email}</div>
+              </button>
+
+              {/* DROPDOWN */}
+              {menuOpen && (
+                <div className="
+                  absolute right-0 mt-2 w-44 
+                  bg-white rounded-xl shadow-lg border 
+                  p-2 z-50
+                ">
+                  <button
+                    onClick={onLogout}
+                    className="
+                      w-full text-left px-3 py-2 
+                      rounded-lg text-sm text-red-500 
+                      hover:bg-red-50
+                    "
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>

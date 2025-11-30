@@ -12,13 +12,13 @@ import Login from './components/Login';
 import SeniorDashboard from './components/SeniorDashboard';
 import JuniorDashboard from './components/JuniorDashboard';
 import Chat from './components/Chat';
+import Profile from './components/Profile'; // <-- added
 
 export default function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // validate saved token on app start
   useEffect(() => {
     async function init() {
       const token = getSavedToken();
@@ -32,7 +32,6 @@ export default function App() {
         const res = await API.get('/auth/me');
         setUser(res.data.user);
       } catch (err) {
-        // invalid token -> clear
         setAuthToken(null);
         setUser(null);
       } finally {
@@ -42,14 +41,12 @@ export default function App() {
     init();
   }, []);
 
-  // after login/signup
   function handleLogin(token, userData) {
     setAuthToken(token);
     setUser(userData);
     navigate('/');
   }
 
-  // logout
   function handleLogout() {
     setAuthToken(null);
     setUser(null);
@@ -66,11 +63,9 @@ export default function App() {
 
   return (
     <>
-      {/* single Navbar for the app */}
       <Navbar user={user} onLogout={handleLogout} />
 
       <Routes>
-        {/* Login page: full-width, centered */}
         <Route
           path="/login"
           element={
@@ -80,7 +75,6 @@ export default function App() {
           }
         />
 
-        {/* Home (boxed layout) */}
         <Route
           path="/"
           element={
@@ -91,7 +85,6 @@ export default function App() {
           }
         />
 
-        {/* Dashboard (boxed layout) */}
         <Route
           path="/dashboard"
           element={
@@ -101,7 +94,6 @@ export default function App() {
           }
         />
 
-        {/* Junior chats (boxed layout) */}
         <Route
           path="/junior"
           element={
@@ -111,12 +103,20 @@ export default function App() {
           }
         />
 
-        {/* Chat page */}
         <Route
           path="/chat/:chatId"
           element={
             <Layout>
               <Chat />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <Layout>
+              <Profile />
             </Layout>
           }
         />
