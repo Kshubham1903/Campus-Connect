@@ -6,6 +6,31 @@ export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Scroll-to-hero helper: if already on home, scroll; otherwise navigate then scroll
+  function scrollToHero() {
+    const doScroll = () => {
+      const hero = document.getElementById("home-hero-section");
+      if (hero) {
+        // offset to avoid sticky navbar overlap (approx header height)
+        const headerHeight = document.querySelector('header')?.offsetHeight || 80;
+        const top = hero.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+        window.scrollTo({ top, behavior: "smooth" });
+      } else {
+        // fallback to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    if (window.location.pathname === "/") {
+      doScroll();
+      return;
+    }
+
+    // navigate to home then scroll after a short delay
+    navigate("/");
+    setTimeout(doScroll, 160);
+  }
+
   return (
     <header className="
       w-full 
@@ -14,7 +39,6 @@ export default function Navbar({ user, onLogout }) {
       sticky top-0 z-50 
       backdrop-blur-sm
     ">
-      {/* WIDTH & ALIGNMENT FIXED */}
       <div className="
         mx-auto 
         max-w-[1600px] 
@@ -22,8 +46,7 @@ export default function Navbar({ user, onLogout }) {
         h-20 
         flex items-center justify-between
       ">
-        
-        {/* LEFT LOGO */}
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
           <div className="
             w-11 h-11 
@@ -40,9 +63,9 @@ export default function Navbar({ user, onLogout }) {
           </div>
         </Link>
 
-        {/* MIDDLE LINKS */}
+        {/* Middle links */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link to="/" className="text-slate-700 hover:text-primary transition">Home</Link>
+          <button onClick={scrollToHero} className="text-slate-700 hover:text-primary transition">Home</button>
 
           {user && user.role === "SENIOR" && (
             <Link to="/dashboard" className="text-slate-700 hover:text-primary transition">
@@ -51,16 +74,14 @@ export default function Navbar({ user, onLogout }) {
           )}
 
           {user && (
-            <Link to="/mychats" className="text-slate-700 hover:text-primary transition">
+            <Link to="/junior" className="text-slate-700 hover:text-primary transition">
               My Chats
             </Link>
           )}
         </nav>
 
-        {/* RIGHT SIDE USER SECTION */}
+        {/* Right side */}
         <div className="flex items-center gap-4">
-
-          {/* If NOT logged in */}
           {!user && (
             <button
               onClick={() => navigate("/login")}
@@ -70,12 +91,11 @@ export default function Navbar({ user, onLogout }) {
             </button>
           )}
 
-          {/* If logged in */}
           {user && (
             <div className="relative">
               <button
                 className="flex items-center gap-3 px-4 py-2 rounded-xl border bg-white hover:bg-gray-50"
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={() => setMenuOpen(o => !o)}
               >
                 <div className="
                   w-9 h-9 
@@ -86,23 +106,27 @@ export default function Navbar({ user, onLogout }) {
                 ">
                   {user.name ? user.name[0].toUpperCase() : "U"}
                 </div>
-                <div className="text-sm text-slate-700">{user.email}</div>
+                <div className="text-sm text-slate-700 hidden sm:block truncate" style={{ maxWidth: 160 }}>
+                  {user.name || user.email}
+                </div>
               </button>
 
-              {/* DROPDOWN */}
               {menuOpen && (
                 <div className="
-                  absolute right-0 mt-2 w-44 
+                  absolute right-0 mt-2 w-48 
                   bg-white rounded-xl shadow-lg border 
                   p-2 z-50
                 ">
                   <button
-                    onClick={onLogout}
-                    className="
-                      w-full text-left px-3 py-2 
-                      rounded-lg text-sm text-red-500 
-                      hover:bg-red-50
-                    "
+                    onClick={() => { setMenuOpen(false); navigate('/profile'); }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50"
+                  >
+                    Profile
+                  </button>
+
+                  <button
+                    onClick={() => { setMenuOpen(false); onLogout && onLogout(); }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50"
                   >
                     Logout
                   </button>

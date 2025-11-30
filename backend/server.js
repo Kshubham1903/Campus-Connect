@@ -394,6 +394,45 @@ app.put('/api/users/me', auth, async (req, res) => {
   }
 });
 
+// DELETE /api/requests/:id
+// Requires auth middleware that sets req.user.id and req.user.role
+app.delete('/api/requests/:id', auth, async (req, res) => {
+  try {
+    const reqId = req.params.id;
+    const requestDoc = await Request.findById(reqId).lean();
+    if (!requestDoc) return res.status(404).json({ error: 'Request not found' });
+
+    // Only the recipient (toUser) or the sender or an admin can delete — change as desired
+    const callerId = req.user.id;
+    const isRecipient = String(requestDoc.toUser) === String(callerId);
+    const isSender = String(requestDoc.fromUser) === String(callerId);
+    const isAdmin = req.user.role === 'ADMIN';
+
+    if (!isRecipient && !isSender && !isAdmin) {
+      return res.status(403).json({ error: 'Not authorized to delete this request' });
+    }
+
+    // Optionally remove related chat if you want decline to delete the chat room
+    if (requestDoc.chat) {
+      try {
+        // if you have a Chat model, delete messages & chat
+        await Chat.findByIdAndDelete(requestDoc.chat);
+        // if messages are in separate collection, delete them too (adjust as per your schema)
+        // await Message.deleteMany({ chat: requestDoc.chat });
+      } catch (e) {
+        console.warn('Failed to delete chat for declined request:', e);
+      }
+    }
+
+    await Request.findByIdAndDelete(reqId);
+
+    return res.json({ success: true, id: reqId });
+  } catch (err) {
+    console.error('DELETE /api/requests/:id err', err);
+    return res.status(500).json({ error: 'server error' });
+  }
+});
+
 
 // start server
 const PORT = process.env.PORT || 5000;

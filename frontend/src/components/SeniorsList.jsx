@@ -1,11 +1,15 @@
 // frontend/src/components/SeniorsList.jsx
 import React, { useEffect, useMemo, useState } from 'react';
-import API from '../api';
+import { useNavigate } from 'react-router-dom';
+import API, { getSavedToken } from '../api';
 import RequestModal from './RequestModal';
 
 /**
- * Polished SeniorsList with larger avatars and cleaner layout.
- * Replace your existing SeniorsList.jsx with this file.
+ * SeniorsList (with login gating for Request)
+ *
+ * - If user is NOT logged in (no token), clicking "Request" will navigate to /login
+ *   and pass location state { fromRequestFor: <seniorId> } so the login page can show a prompt.
+ * - If user IS logged in, it will open the RequestModal as before.
  */
 
 function Avatar({ name, avatarUrl, size = 96 }) {
@@ -63,7 +67,7 @@ function SeniorCard({ senior, onRequest }) {
             </div>
           </div>
 
-          <div className="mt-3 text-sm text-gray-700 line-clamp-3">
+          <div className="mt-3 text-sm text-gray-700">
             {senior.bio || <span className="text-gray-400">No bio provided — ask about specialization, availability, or experience.</span>}
           </div>
 
@@ -83,6 +87,7 @@ export default function SeniorsList(){
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(()=>{ fetchSeniors(); },[]);
 
@@ -111,14 +116,25 @@ export default function SeniorsList(){
     );
   }, [seniors, query]);
 
+  // Gate the request action: if user not logged in, redirect to /login
   function handleRequestClick(s) {
+    const token = getSavedToken();
+    if (!token) {
+      // Not logged-in — redirect to login and pass the attempted senior id in state
+      // so the login page can show a message or redirect back after login.
+      navigate('/login', { state: { fromRequestFor: s._id } });
+      return;
+    }
+
+    // Logged-in — open Request modal
     setSelected(s);
   }
 
   function closeModal() { setSelected(null); }
 
   return (
-    <div className="space-y-6">
+    // NOTE the id="seniors-section" used by the hero scroll
+    <div id="seniors-section" className="w-full space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-semibold">Seniors</h2>
