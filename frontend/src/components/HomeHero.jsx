@@ -1,5 +1,6 @@
 // frontend/src/components/HomeHero.jsx
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 export default function HomeHero() {
@@ -23,33 +24,41 @@ export default function HomeHero() {
 
   return (
     <section className="w-full">
-      <div className="w-full bg-[linear-gradient(180deg,#ffffff,rgba(246,249,255,0.9))] rounded-2xl p-8 lg:p-12 shadow-soft flex flex-col gap-10 items-stretch">
+      <div className="w-full card rounded-2xl p-8 lg:p-12 shadow-soft flex flex-col gap-10 items-stretch">
         <div className="flex flex-col lg:flex-row gap-10 items-center justify-between">
           <div className="flex-1 flex flex-col justify-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-slate-900">
-              Connect with experienced seniors — <span className="text-primary">get help, fast.</span>
-            </h1>
+            <motion.h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white/95"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05, duration: 0.45 }}
+            >
+              Connect with experienced seniors — <span className="text-primary neon">get help, fast.</span>
+            </motion.h1>
 
-            <p className="mt-4 max-w-2xl text-lg text-slate-600">
+            <p className="mt-4 max-w-2xl text-lg text-white/80">
               CampusConnect pairs juniors with seniors from your college for fast doubt resolution,
               project guidance, and mentorship. Request help, get accepted, and chat instantly —
               all inside one elegant platform.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <button
+              <motion.button
                 onClick={goToSeniors}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold bg-gradient-to-br from-primary to-tealSoft text-white shadow-soft-lg hover:opacity-95"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold bg-gradient-to-br from-primary to-accent-500 text-white shadow-soft-lg hover:opacity-95 btn-neon"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
               >
                 Explore Seniors
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
                 onClick={() => navigate('/login')}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold border border-gray-200 bg-white hover:bg-gray-50"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold border border-transparent bg-transparent hover:bg-primary/10 text-sm text-white/80 btn-ghost"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 Login / Signup
-              </button>
+              </motion.button>
             </div>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-slate-500">

@@ -47,7 +47,7 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="max-w-md w-full bg-white rounded-xl shadow-soft p-6">
+    <div className="max-w-md w-full card rounded-xl shadow-soft p-6">
       <h3 className="text-xl font-semibold mb-4">{mode === 'login' ? 'Login' : 'Create account'}</h3>
 
       <form onSubmit={submit} className="space-y-3">

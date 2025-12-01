@@ -1,6 +1,7 @@
 // frontend/src/components/RequestModal.jsx
 import React, { useState } from 'react';
 import API from '../api';
+import toast from 'react-hot-toast';
 
 export default function RequestModal({ senior, onClose, onSent }) {
   const [message, setMessage] = useState('');
@@ -17,10 +18,13 @@ export default function RequestModal({ senior, onClose, onSent }) {
     try {
       await API.post('/requests', { toUserId: senior._id, message });
       setSending(false);
+      toast.success('Request sent — waiting for review');
       if (onSent) onSent();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || 'Failed to send request');
+      const msg = err.response?.data?.error || 'Failed to send request';
+      setError(msg);
+      toast.error(msg);
       setSending(false);
     }
   }
@@ -28,7 +32,7 @@ export default function RequestModal({ senior, onClose, onSent }) {
   return (
     <div className="fixed inset-0 flex items-start justify-center pt-24 z-50">
       <div className="absolute inset-0 bg-black/30" onClick={onClose}></div>
-      <div className="relative bg-white rounded-lg shadow p-6 w-[640px] z-50">
+      <div className="relative rounded-lg shadow p-6 w-[640px] z-50 modal card-pop">
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-lg font-semibold">Request help from {senior.name || senior.email}</div>

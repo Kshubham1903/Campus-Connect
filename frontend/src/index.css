@@ -15,7 +15,7 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #7C3AED;
   text-decoration: inherit;
 }
 a:hover {
@@ -28,6 +28,12 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* fallback neon gradient in case styles.css isn't applied yet */
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(124,77,255,0.12) 0%, transparent 18%),
+    radial-gradient(circle at 85% 75%, rgba(0,255,246,0.08) 0%, transparent 22%),
+    radial-gradient(circle at 75% 25%, rgba(255,95,139,0.06) 0%, transparent 18%),
+    linear-gradient(180deg, #0b1020 0%, #2b0b3b 45%, #001623 100%);
 }
 
 h1 {
@@ -47,12 +53,48 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #7C3AED;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* neon/glow utility classes */
+.neon {
+  color: #FF6B6B;
+  text-shadow: 0 0 6px rgba(255,107,107,0.8), 0 0 14px rgba(124,77,255,0.12);
+}
+
+.neon-pulse {
+  animation: neonPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0% { text-shadow: 0 0 4px rgba(0,255,246,0.6), 0 0 14px rgba(100,92,255,0.08);} 
+  50% { text-shadow: 0 0 10px rgba(0,255,246,0.9), 0 0 22px rgba(100,92,255,0.18);} 
+  100% { text-shadow: 0 0 4px rgba(0,255,246,0.6), 0 0 14px rgba(100,92,255,0.08);} 
+}
+
+/* glowing button */
+.btn-neon {
+  background: linear-gradient(90deg,#1e1936,#1a1428);
+  color: #fff5f5;
+  border: 1px solid rgba(124,77,255,0.6);
+  box-shadow: 0 6px 30px rgba(16,12,51,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn-neon:hover { transform: translateY(-2px) scale(1.02); filter: saturate(1.05); box-shadow: 0 10px 40px rgba(255,107,107,0.14), 0 0 28px rgba(124,77,255,0.06); }
+
+/* popup/overlay subtle backdrop */
+.modal { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); }
+
+/* simple subtle card animation */
+.card-pop {
+  transform-origin: center top;
+  animation: cardPop 0.32s cubic-bezier(.2,.9,.2,1);
+}
+@keyframes cardPop { from { opacity:0; transform: translateY(6px) scale(.995); } to { opacity:1; transform: translateY(0) scale(1); } }
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -65,4 +107,17 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  /* better subtle page background in light mode */
+  body { background-image: radial-gradient(circle at 12% 18%, rgba(145,95,255,0.18) 0%, transparent 20%), radial-gradient(circle at 86% 72%, rgba(0,255,220,0.09)0%, transparent 28%), linear-gradient(180deg,#05061a 0%,#15062f 50%,#001522 100%); }
 }
+
+@media (prefers-color-scheme: dark) {
+  body { background-image: radial-gradient(circle at 12% 18%, rgba(145,95,255,0.18) 0%, transparent 20%), radial-gradient(circle at 86% 72%, rgba(0,255,220,0.09)0%, transparent 28%), linear-gradient(180deg,#05061a 0%,#15062f 50%,#001522 100%); }
+}
+
+/* utility to hide native scrollbars while keeping scrolling functionality available */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; } /* WebKit browsers */

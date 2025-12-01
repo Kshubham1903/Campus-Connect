@@ -36,42 +36,55 @@ export default function JuniorDashboard(){
   }
 
   return (
-    <div style={{ display:'grid', gridTemplateColumns: '1fr 1fr', gap:20 }}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <h3>Your Requests</h3>
-        {outgoing.length === 0 && <div style={{ color:'#666' }}>No requests sent yet.</div>}
-        <ul style={{ listStyle:'none', padding:0 }}>
+        <h3 className="text-lg font-semibold mb-4">Your Requests</h3>
+        {outgoing.length === 0 && (
+          <div className="card py-6 px-4 text-center text-sm text-muted">No requests sent yet.</div>
+        )}
+
+        <ul className="space-y-3 mt-4">
           {outgoing.map(r => (
-            <li key={r._id} style={{ padding:10, border:'1px solid #eee', marginBottom:8 }}>
-              <div><strong>To:</strong> {r.toUser?.name} ({r.toUser?.email})</div>
-              <div><strong>Status:</strong> {r.status}</div>
-              <div style={{ marginTop:6 }}>{r.message}</div>
-              {r.status === 'ACCEPTED' && r.chat ? (
-                <div style={{ marginTop:8 }}>
-                  <button onClick={() => navigate(`/chat/${r.chat}`)}>Open Chat</button>
+            <li key={r._id} className="card p-3 border-transparent hover:border-white/5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="text-sm text-muted"><strong>To:</strong> {r.toUser?.name} <span className="text-xs text-gray-300">({r.toUser?.email})</span></div>
+                  <div className="mt-1 text-xs text-muted"><strong>Status:</strong> {r.status}</div>
+                  <div className="mt-3 text-sm text-gray-200">{r.message}</div>
                 </div>
-              ) : null}
+
+                {r.status === 'ACCEPTED' && r.chat ? (
+                  <div className="flex-shrink-0 ml-3">
+                    <button onClick={() => navigate(`/chat/${r.chat}`)} className="btn btn-primary">Open Chat</button>
+                  </div>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
       <div>
-        <h3>Your Chats</h3>
-        {chats.length === 0 && <div style={{ color:'#666' }}>No active chats. When a senior accepts, a chat will appear here.</div>}
-        <ul style={{ listStyle:'none', padding:0 }}>
+        <h3 className="text-lg font-semibold mb-4">Your Chats</h3>
+        {chats.length === 0 && (
+          <div className="card py-6 px-4 text-center text-sm text-muted">No active chats. When a senior accepts, a chat will appear here.</div>
+        )}
+
+        <ul className="space-y-3 mt-4">
           {chats.map(c => (
-            <li key={c._id} style={{ padding:10, border:'1px solid #eee', marginBottom:8 }}>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <li key={c._id} className="card p-3 border-transparent hover:border-white/5">
+              <div className="flex items-center justify-between gap-4">
                 <div>
-                  <strong>{c.partner?.name || 'Unknown'}</strong>
-                  <div style={{ fontSize:12, color:'#666' }}>{c.partner?.email}</div>
+                  <div className="font-semibold">{c.partner?.name || 'Unknown'}</div>
+                  <div className="text-xs text-muted">{c.partner?.email}</div>
                 </div>
-                <div>
-                  <button onClick={() => navigate(`/chat/${c._id}`)}>Open</button>
+
+                <div className="flex items-center gap-2">
+                  <button onClick={() => navigate(`/chat/${c._id}`)} className="btn btn-sm btn-primary">Open</button>
                 </div>
               </div>
-              <div style={{ marginTop:8, color:'#333' }}>
+
+              <div className="mt-3 text-sm text-gray-300">
                 {c.lastMessage ? `${c.lastMessage.text} — ${new Date(c.lastMessage.createdAt).toLocaleString()}` : <em>No messages yet</em>}
               </div>
             </li>

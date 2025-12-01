@@ -30,7 +30,7 @@ function Avatar({ name, avatarUrl, size = 96 }) {
       style={{
         width: size,
         height: size,
-        background: 'linear-gradient(135deg,#6C8CFF,#8bd3c7)'
+        background: 'linear-gradient(135deg,#7C3AED,#FF6B6B)'
       }}
     >
       <span style={{ fontSize: Math.round(size / 2.5) }}>{initials}</span>
@@ -40,7 +40,7 @@ function Avatar({ name, avatarUrl, size = 96 }) {
 
 function SeniorCard({ senior, onRequest }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-soft hover:shadow-lg transition-shadow duration-200 border border-transparent hover:border-gray-100">
+    <div className="card rounded-2xl p-5 hover:shadow-lg transition-shadow duration-200 border border-transparent hover:border-white/5">
       <div className="flex gap-4">
         <div className="flex-shrink-0">
           <Avatar name={senior.name || senior.email} avatarUrl={senior.avatarUrl} />
@@ -50,14 +50,14 @@ function SeniorCard({ senior, onRequest }) {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <div className="text-lg font-semibold text-slate-900 truncate">{senior.name || '(No name)'}</div>
+                <div className="text-lg font-semibold text-white/95 truncate">{senior.name || '(No name)'}</div>
                 <div className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-semibold">{senior.role || 'SENIOR'}</div>
               </div>
-              <div className="text-sm text-gray-500 truncate">{senior.email}</div>
+              <div className="text-sm text-white/60 truncate">{senior.email}</div>
             </div>
 
             <div className="flex flex-col items-end gap-2">
-              <div className="text-sm text-gray-400">{senior.years || ''}</div>
+              <div className="text-sm text-white/60">{senior.years || ''}</div>
               <button
                 onClick={() => onRequest(senior)}
                 className="px-3 py-1 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-95"
@@ -67,13 +67,13 @@ function SeniorCard({ senior, onRequest }) {
             </div>
           </div>
 
-          <div className="mt-3 text-sm text-gray-700">
-            {senior.bio || <span className="text-gray-400">No bio provided — ask about specialization, availability, or experience.</span>}
+          <div className="mt-3 text-sm text-white/60">
+            {senior.bio || <span className="text-white/50">No bio provided — ask about specialization, availability, or experience.</span>}
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
             {(senior.tags || []).slice(0,6).map(t => (
-              <span key={t} className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-700">{t}</span>
+              <span key={t} className="text-xs px-2 py-1 rounded-md surface text-white/85 border border-white/6">{t}</span>
             ))}
           </div>
         </div>
@@ -155,7 +155,7 @@ export default function SeniorsList(){
 
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({length:6}).map((_, i) => <div key={i} className="bg-white animate-pulse p-6 rounded-2xl h-44" />)}
+          {Array.from({length:6}).map((_, i) => <div key={i} className="surface animate-pulse p-6 rounded-2xl h-44" />)}
         </div>
       ) : (
         <>

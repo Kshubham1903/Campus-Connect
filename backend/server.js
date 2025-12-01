@@ -13,6 +13,7 @@ const User = require('./models/User');
 const Request = require('./models/Request');
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
+const Notification = require('./models/Notification');
 
 const path = require('path');
 const multer = require('multer');
@@ -107,7 +108,13 @@ app.post('/api/requests', auth, async (req, res) => {
     const toUser = await User.findById(toUserId);
     if (!toUser || toUser.role !== 'SENIOR') return res.status(400).json({ error: 'target not a senior' });
     const r = await Request.create({ fromUser: fromUserId, toUser: toUserId, message });
-    // (Optional) notify senior via email/push here
+    // create a notification for the senior (recipient)
+    try {
+      const notif = await Notification.create({ user: toUserId, actor: fromUserId, type: 'request', message: `${fromUser.name || fromUser.email} sent you a request`, meta: { requestId: r._id } });
+      if (app.locals.io) app.locals.io.to(`user:${toUserId}`).emit('notification', { _id: notif._id, type: notif.type, message: notif.message, meta: notif.meta, createdAt: notif.createdAt });
+    } catch (e) {
+      console.warn('failed to create/emit request notification', e);
+    }
     res.json(r);
   } catch (err) {
     console.error('create request err', err);
@@ -157,9 +164,20 @@ app.post('/api/requests/:id/respond', auth, async (req, res) => {
       if (!chat) chat = await Chat.create({ user1: request.fromUser, user2: request.toUser });
       request.chat = chat._id; // store chat id in request for junior visibility
       await request.save();
+      // notify the junior that their request was accepted
+      try {
+        const notif = await Notification.create({ user: request.fromUser, actor: request.toUser, type: 'request_response', message: `${request.toUser} accepted your request`, meta: { requestId: request._id, chatId: chat._id } });
+        if (app.locals.io) app.locals.io.to(`user:${String(request.fromUser)}`).emit('notification', { _id: notif._id, type: notif.type, message: notif.message, meta: notif.meta, createdAt: notif.createdAt });
+      } catch (e) {
+        console.warn('failed to send request-accepted notification', e);
+      }
       return res.json({ request, chatId: chat._id });
     } else {
       await request.save();
+      try {
+        const notif = await Notification.create({ user: request.fromUser, actor: request.toUser, type: 'request_response', message: `${request.toUser} declined your request`, meta: { requestId: request._id } });
+        if (app.locals.io) app.locals.io.to(`user:${String(request.fromUser)}`).emit('notification', { _id: notif._id, type: notif.type, message: notif.message, meta: notif.meta, createdAt: notif.createdAt });
+      } catch (e) { console.warn('failed to send request-declined notification', e); }
       return res.json({ request });
     }
   } catch (err) {
@@ -230,6 +248,34 @@ app.get('/api/chats', auth, async (req, res) => {
   }
 });
 
+// Notifications endpoints
+app.get('/api/notifications', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const notifs = await Notification.find({ user: userId }).sort({ createdAt: -1 }).limit(200).lean();
+    res.json({ notifications: notifs });
+  } catch (err) {
+    console.error('list notifications err', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+app.patch('/api/notifications/:id/read', auth, async (req, res) => {
+  try {
+    const notifId = req.params.id;
+    const userId = req.user.id;
+    const n = await Notification.findById(notifId);
+    if (!n) return res.status(404).json({ error: 'not found' });
+    if (String(n.user) !== String(userId)) return res.status(403).json({ error: 'not allowed' });
+    n.read = true;
+    await n.save();
+    res.json({ notification: n });
+  } catch (err) {
+    console.error('mark notif read err', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
 
 // post message via HTTP (fallback)
 app.post('/api/chats/:id/messages', auth, async (req, res) => {
@@ -250,6 +296,12 @@ app.post('/api/chats/:id/messages', auth, async (req, res) => {
         text: msg.text,
         createdAt: msg.createdAt
       });
+      // create notification for recipient
+      try {
+        const recipient = String(chat.user1) === String(userId) ? String(chat.user2) : String(chat.user1);
+        const notif = await Notification.create({ user: recipient, actor: userId, type: 'message', message: msg.text.slice(0,160), meta: { chatId } });
+        app.locals.io.to(`user:${recipient}`).emit('notification', { _id: notif._id, type: notif.type, message: notif.message, meta: notif.meta, createdAt: notif.createdAt });
+      } catch (e) { console.warn('failed to create/emit message notification from http', e); }
     }
     res.json({ message: msg });
   } catch (err) {
@@ -282,6 +334,7 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   console.log('socket connected', socket.id, 'user', socket.user?.id);
+  try { if (socket.user?.id) socket.join(`user:${socket.user.id}`); } catch (e) { console.warn('join user room err', e); }
 
   socket.on('joinChat', ({ chatId }) => {
     if (!chatId) return;
@@ -311,6 +364,11 @@ io.on('connection', (socket) => {
       });
       chat.lastMessageAt = new Date();
       await chat.save();
+      try {
+        const recipient = String(chat.user1) === String(senderId) ? String(chat.user2) : String(chat.user1);
+        const notif = await Notification.create({ user: recipient, actor: senderId, type: 'message', message: text.slice(0,160), meta: { chatId } });
+        io.to(`user:${recipient}`).emit('notification', { _id: notif._id, type: notif.type, message: notif.message, meta: notif.meta, createdAt: notif.createdAt });
+      } catch (e) { console.warn('failed to create/send message notification', e); }
     } catch (err) {
       console.error('socket sendMessage err', err);
       socket.emit('error', { message: 'send failed' });

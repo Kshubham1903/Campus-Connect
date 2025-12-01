@@ -7,20 +7,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // primary palette
+        // new premium palette: deep violet ↔ coral accent
         primary: {
-          50: '#f4f7ff',
-          100: '#e9eefc',
-          200: '#cdd9fb',
-          300: '#aebef9',
-          400: '#90a4f7',
-          DEFAULT: '#6C8CFF', // use as bg-primary
-          600: '#5A74EE',
-          700: '#415FD6',
-          800: '#2F4AA8',
-          900: '#22367A'
+          50: '#f6f3ff',
+          100: '#efe6ff',
+          200: '#e0ccff',
+          300: '#caa6ff',
+          400: '#b27cff',
+          DEFAULT: '#7C3AED', // vivid violet
+          600: '#6B2AE0',
+          700: '#571CBC',
+          800: '#3e0f84',
+          900: '#22064a'
         },
-        tealSoft: '#8bd3c7',
+        // complementary teal for soft accents (used sparingly)
+        tealSoft: '#7EE8D4',
+        // warm coral accent for highlights / CTA secondary color
+        accent: {
+          400: '#FF9F7A',
+          500: '#FF6B6B'
+        },
         coral: '#ffb199',
         slateSoft: '#eef2f6',
         muted: '#6b7280'

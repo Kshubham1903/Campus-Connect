@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import API, { getSavedToken } from '../api';
 import { io } from 'socket.io-client';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 /**
  * Chat component (Tailwind)
@@ -141,9 +141,9 @@ export default function Chat() {
     const time = new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return (
       <div key={m._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-        <div className={`max-w-[78%] break-words p-3 rounded-2xl ${isMe ? 'bg-primary/10 text-slate-900 rounded-br-none' : 'bg-white border'} shadow-sm`}>
+          <div className={`max-w-[78%] break-words p-3 rounded-2xl ${isMe ? 'bubble-me' : 'bubble-other'} shadow-sm`}>
           <div className="text-sm">{m.text}</div>
-          <div className="text-xs text-gray-400 mt-1 text-right">{time}</div>
+          <div className="text-xs text-white/60 mt-1 text-right">{time}</div>
         </div>
       </div>
     );
@@ -151,45 +151,64 @@ export default function Chat() {
 
   // header partner name / status
   const partnerName = partner?.name || partner?.email || 'Chat';
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-3xl mx-auto">
       {/* header */}
-      <div className="bg-white rounded-lg shadow p-3 mb-4 flex items-center justify-between">
-        <div>
-          <div className="text-lg font-semibold">{partnerName}</div>
-          <div className="text-xs text-gray-500">You are chatting with {partnerName}</div>
+      <div className="card p-2 mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-white/5"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/90"><path d="M15 18l-6-6 6-6"/></svg></button>
+
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/40 to-accent-400 flex items-center justify-center text-white/90 font-semibold">
+            {partner?.name ? partner.name.slice(0,2).toUpperCase() : partner?.email?.slice(0,2).toUpperCase() || 'U'}
+          </div>
+
+          <div className="leading-tight">
+            <div className="text-sm font-semibold text-white/95">{partnerName}</div>
+            <div className="text-xs text-white/60">{partner?.status || 'online'}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* placeholder for future actions: call, info, etc. */}
+          <button className="p-2 rounded-full hover:bg-white/5"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/90"><path d="M22 2L11 13"/><path d="M22 2l-7 20 2-7 7-7z"/></svg></button>
         </div>
       </div>
 
       {/* chat area */}
-      <div className="bg-white rounded-lg shadow p-3">
-        <div className="h-[520px] overflow-auto p-4 flex flex-col gap-3 bg-gray-50 rounded" id="chat-scroll">
+      <div className="card p-3">
+        <div className="h-[64vh] overflow-auto p-4 flex flex-col gap-3 bg-transparent rounded hide-scrollbar" id="chat-scroll">
           {loading ? (
-            <div className="text-center text-gray-400">Loading messages…</div>
+            <div className="text-center text-white/60">Loading messages…</div>
           ) : (
             messages.map(m => renderMessage(m))
           )}
           <div ref={bottomRef} />
         </div>
 
-        {/* input */}
-        <div className="mt-3 flex gap-3 items-end">
-          <textarea
-            value={text}
-            onChange={e => setText(e.target.value)}
-            rows={2}
-            placeholder="Write a message..."
-            className="flex-1 p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                send();
-              }
-            }}
-          />
-          <div className="flex flex-col gap-2">
-            <button onClick={send} className="px-4 py-2 rounded-lg bg-primary text-white">Send</button>
+        {/* input (WhatsApp-style) */}
+        <div className="mt-3">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/6 rounded-full px-3 py-2">
+            <button className="p-2 rounded-full hover:bg-white/6 text-white/80"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg></button>
+
+            <textarea
+              value={text}
+              onChange={e => setText(e.target.value)}
+              rows={1}
+              placeholder="Write a message..."
+              className="flex-1 bg-transparent resize-none outline-none text-white placeholder:text-white/60 px-2 py-1 max-h-28"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  send();
+                }
+              }}
+            />
+
+            <button onClick={send} className="ml-2 p-2 rounded-full bg-primary/90 text-white shadow-md hover:scale-105 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20 2-7 7-7z"/></svg>
+            </button>
           </div>
         </div>
       </div>

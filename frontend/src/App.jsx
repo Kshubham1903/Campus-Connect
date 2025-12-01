@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import API, { getSavedToken, setAuthToken } from './api';
+import { Toaster } from 'react-hot-toast';
 
 import Navbar from './components/Navbar';
 import Layout from './components/Layout';
@@ -68,6 +69,9 @@ export default function App() {
 
   return (
     <>
+      <Toaster position="top-right" />
+
+      {/* keep animations local to components — no global route animation */}
       <Navbar user={user} onLogout={handleLogout} />
 
       <Routes>

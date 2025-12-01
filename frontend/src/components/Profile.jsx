@@ -88,7 +88,7 @@ export default function Profile() {
           {avatarSrc ? (
             <img src={avatarSrc} alt="avatar" className="w-28 h-28 rounded-xl object-cover" />
           ) : (
-            <div className="w-28 h-28 rounded-xl bg-gray-100 flex items-center justify-center font-bold text-xl">
+            <div className="w-28 h-28 rounded-xl surface border border-white/6 flex items-center justify-center font-bold text-xl text-white/80">
               {(user.name || user.email || 'U').slice(0,2).toUpperCase()}
             </div>
           )}
@@ -106,7 +106,7 @@ export default function Profile() {
           <div className="mt-4 text-sm text-gray-700">{user.bio || <em>No bio yet</em>}</div>
           <div className="mt-3 flex flex-wrap gap-2">
             {(user.tags || []).map(t => (
-              <span key={t} className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-700">{t}</span>
+              <span key={t} className="text-xs px-2 py-1 rounded-md surface text-white/85 border border-white/6">{t}</span>
             ))}
           </div>
         </div>
