@@ -1,128 +1,149 @@
-/* Font + base adjustments */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root{
-  --max-w: 1100px;
+:root {
+--max-w: 1100px;
 }
 
-html,body,#root{height:100%}
-body{
-      /* Neon gradient background — soft, calming neon hues with faint glowing overlays
-        Uses layered gradients so cards and component surfaces sit beautifully on top. */
-    --bg-start: #0b1020; /* deep navy anchor */
-    --bg-mid:   #2b0b3b; /* violet mid */
-    --bg-end:   #001623; /* teal-green depth */
-    --neon-a: rgba(124,77,255,0.12); /* soft purple glow */
-    --neon-b: rgba(0,255,246,0.08); /* soft aqua glow */
-    --neon-c: rgba(255,95,139,0.06); /* warm pink accent */
-
-    background-image:
-     radial-gradient(circle at 10% 15%, var(--neon-a) 0%, transparent 18%),
-     radial-gradient(circle at 85% 75%, var(--neon-b) 0%, transparent 22%),
-     radial-gradient(circle at 75% 25%, var(--neon-c) 0%, transparent 18%),
-     linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
-  color: rgb(15 23 42 / 0.95);
+html, body, #root {
+height: 100%;
 }
 
-/* Dark-mode alternate background (automatic if page uses .dark on <html>) */
-:root.dark body, html.dark body {
-  /* Dark-mode neon variant — slightly deeper with richer glows */
-  --bg-start: #05061a; /* very deep navy */
-  --bg-mid:   #15062f; /* saturated purple */
-  --bg-end:   #001522; /* teal anchor */
-  --neon-a: rgba(145, 95, 255, 0.18);
-  --neon-b: rgba(0, 255, 220, 0.09);
-  --neon-c: rgba(255,95,139,0.08);
-  background-image:
-    radial-gradient(circle at 12% 18%, var(--neon-a) 0%, transparent 20%),
-    radial-gradient(circle at 86% 72%, var(--neon-b) 0%, transparent 28%),
-    radial-gradient(circle at 70% 24%, var(--neon-c) 0%, transparent 20%),
-    linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
-  background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
-  color: rgba(255,255,255,0.9);
-}
-/* global font smoothing and family for site (kept in one place) */
 body {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+--bg-start: #0b1020;
+--bg-mid: #2b0b3b;
+--bg-end: #001623;
+--neon-a: rgba(124,77,255,0.12);
+--neon-b: rgba(0,255,246,0.08);
+--neon-c: rgba(255,95,139,0.06);
+
+background-image:
+radial-gradient(circle at 10% 15%, var(--neon-a) 0%, transparent 18%),
+radial-gradient(circle at 85% 75%, var(--neon-b) 0%, transparent 22%),
+radial-gradient(circle at 75% 25%, var(--neon-c) 0%, transparent 18%),
+linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
+color: rgb(15 23 42 / 0.95);
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
-/* subtle container card style used across: more translucent so the neon backdrop shows through */
+:root.dark body,
+html.dark body {
+--bg-start: #05061a;
+--bg-mid: #15062f;
+--bg-end: #001522;
+--neon-a: rgba(145, 95, 255, 0.18);
+--neon-b: rgba(0, 255, 220, 0.09);
+--neon-c: rgba(255,95,139,0.08);
+background-image:
+radial-gradient(circle at 12% 18%, var(--neon-a) 0%, transparent 20%),
+radial-gradient(circle at 86% 72%, var(--neon-b) 0%, transparent 28%),
+radial-gradient(circle at 70% 24%, var(--neon-c) 0%, transparent 20%),
+linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+color: rgba(255,255,255,0.9);
+}
+
 .card {
-  @apply rounded-xl shadow-soft p-5;
-  /* Slightly stronger surface so cards separate from the backdrop and avoid visual overlap */
-  background-color: rgba(5,6,12,0.54); /* dark semi-opaque panel */
-  border: 1px solid rgba(255,255,255,0.04);
-  color: rgba(255,255,255,0.95);
+@apply rounded-xl p-5;
+background-color: rgba(5,6,12,0.54);
+border: 1px solid rgba(255,255,255,0.04);
+color: rgba(255,255,255,0.95);
 }
 
-/* subtle surface helper — used for lightweight component surfaces (no blur) */
 .surface {
-  /* lighter, even more subtle surface for small UI pieces (tags, small chips) */
-  background-color: rgba(255,255,255,0.015);
-  border: 1px solid rgba(255,255,255,0.01);
-  color: rgba(255,255,255,0.9);
+background-color: rgba(255,255,255,0.015);
+border: 1px solid rgba(255,255,255,0.01);
+color: rgba(255,255,255,0.9);
 }
 
-/* nice input style */
 .input {
-  @apply w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20; 
-  /* Inputs blend with the neon backdrop but stay legible */
-  background-color: rgba(0,0,0,0.18);
-  border-color: rgba(255,255,255,0.03);
-  color: rgba(255,255,255,0.95);
+@apply w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20;
+background-color: rgba(0,0,0,0.18);
+border-color: rgba(255,255,255,0.03);
+color: rgba(255,255,255,0.95);
 }
 
-/* Tiny helper for subtle muted text */
 .muted { @apply text-sm text-muted; }
 
-/* nice button base - use Button component or classes */
 .btn {
-  @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-semibold;
+@apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-semibold;
 }
-.btn-primary { @apply bg-primary text-white shadow-soft-lg hover:bg-primary-600; }
-.btn-ghost { @apply border text-white/90; background-color: rgba(255,255,255,0.015); border-color: rgba(255,255,255,0.02); }
-
-/* chat bubble helpers */
-.bubble-me { @apply text-white rounded-2xl rounded-br-none p-3; background-color: rgba(124,58,237,0.10); }
-.bubble-other { @apply rounded-2xl p-3; background-color: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.015); color: rgba(255,255,255,0.9); }
-
-/* small responsive tweaks */
-@media (max-width: 640px) {
-  .container { padding-left: 1rem; padding-right: 1rem; }
+.btn-primary {
+@apply bg-primary text-white;
+}
+.btn-ghost {
+@apply border text-white/90;
+background-color: rgba(255,255,255,0.015);
+border-color: rgba(255,255,255,0.02);
 }
 
-/* -----------------------------
-   Neon, glow and small animations
-   ----------------------------- */
-.neon { color: #FF6B6B; text-shadow: 0 0 6px rgba(255,107,107,0.8), 0 0 18px rgba(124,77,255,0.12); }
-.neon-pulse { animation: neonPulse 2.4s ease-in-out infinite; }
+.bubble-me {
+@apply text-white rounded-2xl rounded-br-none p-3;
+background-color: rgba(124,58,237,0.10);
+}
+.bubble-other {
+@apply rounded-2xl p-3;
+background-color: rgba(255,255,255,0.015);
+border: 1px solid rgba(255,255,255,0.015);
+color: rgba(255,255,255,0.9);
+}
+
+.neon {
+color: #FF6B6B;
+text-shadow: 0 0 6px rgba(255,107,107,0.8), 0 0 18px rgba(124,77,255,0.12);
+}
+.neon-pulse {
+animation: neonPulse 2.4s ease-in-out infinite;
+}
 
 @keyframes neonPulse {
-  0% { text-shadow: 0 0 4px rgba(255,107,107,0.6), 0 0 14px rgba(124,77,255,0.08);} 
-  50% { text-shadow: 0 0 10px rgba(0,255,246,0.9), 0 0 22px rgba(100,92,255,0.18);} 
-  100% { text-shadow: 0 0 4px rgba(0,255,246,0.6), 0 0 14px rgba(100,92,255,0.08);} 
+0% { text-shadow: 0 0 4px rgba(255,107,107,0.6), 0 0 14px rgba(124,77,255,0.08);}
+50% { text-shadow: 0 0 10px rgba(0,255,246,0.9), 0 0 22px rgba(100,92,255,0.18);}
+100% { text-shadow: 0 0 4px rgba(0,255,246,0.6), 0 0 14px rgba(100,92,255,0.08);}
 }
 
-.btn-neon { @apply bg-gradient-to-br from-primary to-accent-500 text-white; box-shadow: 0 6px 30px rgba(18,12,51,0.08), inset 0 -1px 0 rgba(255,255,255,0.02); border-radius: 12px; transition: transform .12s ease, box-shadow .12s ease, filter .12s ease; }
-.btn-neon:hover { transform: translateY(-2px) scale(1.02); filter: saturate(1.05); box-shadow: 0 10px 40px rgba(252,107,107,0.18), 0 0 28px rgba(124,77,255,0.06); }
+.btn-neon {
+@apply bg-gradient-to-br from-primary to-accent-500 text-white;
+box-shadow: 0 6px 30px rgba(18,12,51,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+border-radius: 12px;
+transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn-neon:hover {
+transform: translateY(-2px) scale(1.02);
+filter: saturate(1.05);
+box-shadow: 0 10px 40px rgba(252,107,107,0.18), 0 0 28px rgba(124,77,255,0.06);
+}
 
-.modal { background-color: rgba(6,8,12,0.92); border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 18px 80px rgba(0,0,0,0.6); }
+.modal {
+background-color: rgba(6,8,12,0.92);
+border-radius: 16px;
+border: 1px solid rgba(255,255,255,0.06);
+box-shadow: 0 18px 80px rgba(0,0,0,0.6);
+}
 
-.card-pop { transform-origin: center top; animation: cardPop 0.32s cubic-bezier(.2,.9,.2,1); }
-@keyframes cardPop { from { opacity:0; transform: translateY(6px) scale(.995); } to { opacity:1; transform: translateY(0) scale(1); } }
+.card-pop {
+transform-origin: center top;
+animation: cardPop 0.32s cubic-bezier(.2,.9,.2,1);
+}
+@keyframes cardPop {
+from { opacity:0; transform: translateY(6px) scale(.995); }
+to { opacity:1; transform: translateY(0) scale(1); }
+}
 
-/* fade-in-up helper — used across chat and cards */
-.animate-fade-in-up { animation: floatUp .42s cubic-bezier(.2,.9,.2,1) both; }
-@keyframes floatUp { from { opacity:0; transform: translateY(8px); } to   { opacity:1; transform: translateY(0); } }
+.animate-fade-in-up {
+animation: floatUp .42s cubic-bezier(.2,.9,.2,1) both;
+}
+@keyframes floatUp {
+from { opacity:0; transform: translateY(8px); }
+to { opacity:1; transform: translateY(0); }
+}
 
-/* hide-scrollbar: use this on scroll containers to visually hide native scrollbars while
-  preserving scrolling capability. Cross-browser solution to keep chat area clean. */
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar {
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
 .hide-scrollbar::-webkit-scrollbar { display: none; }
-

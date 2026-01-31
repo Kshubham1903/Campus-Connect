@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 
-const connectDB = async () => {
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mentorchat';
+
+async function connectDB() {
   try {
-    // use the URL from env (fall back to localhost)
-    const url = process.env.MONGO_URL || 'mongodb://localhost:27017/mentorchat';
-    await mongoose.connect(url); // no extra options for mongoose v7+
+    await mongoose.connect(MONGO_URI, {
+      autoIndex: true
+    });
     console.log('MongoDB connected');
   } catch (err) {
-    console.error('Mongo connect error', err);
+    console.error('MongoDB connection error', err);
     process.exit(1);
   }
-};
+}
 
 module.exports = connectDB;
