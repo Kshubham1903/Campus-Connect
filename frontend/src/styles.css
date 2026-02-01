@@ -78,6 +78,9 @@ color: rgba(255,255,255,0.95);
 background-color: rgba(255,255,255,0.015);
 border-color: rgba(255,255,255,0.02);
 }
+.btn-danger {
+@apply bg-red-600 text-white hover:bg-red-700;
+}
 
 .bubble-me {
 @apply text-white rounded-2xl rounded-br-none p-3;

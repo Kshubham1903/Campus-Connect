@@ -181,7 +181,7 @@ export default function Navbar({ user, onLogout }) {
           )}
 
           {user && (
-            <div className="relative flex items-center gap-3">
+            <div className="relative hidden md:flex items-center gap-3">
               {/* notifications */}
               <div className="relative">
                 <button
@@ -282,6 +282,34 @@ export default function Navbar({ user, onLogout }) {
       {mobileNavOpen && (
         <div className="md:hidden border-t border-white/6 bg-black/80">
           <div className="px-6 py-4 flex flex-col gap-2">
+            {user && (
+              <>
+                {/* Profile info in mobile menu */}
+                <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-lg bg-white/5">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-accent-500/12 flex items-center justify-center text-sm font-medium text-white/80 flex-shrink-0">
+                    {(user.name || user.email || 'U').slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <span className="text-sm text-white/90 truncate font-medium">{user.name || user.email}</span>
+                    <span className="text-xs text-white/60 truncate">{user.email}</span>
+                  </div>
+                </div>
+
+                {/* Notifications in mobile menu */}
+                <button
+                  onClick={() => { setMobileNavOpen(false); setNotifOpen(true); }}
+                  className="flex items-center justify-between text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+                  type="button"
+                >
+                  <span>Notifications</span>
+                  {unread > 0 && (
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
+                      {unread}
+                    </span>
+                  )}
+                </button>
+              </>
+            )}
             <button
               onClick={() => { setMobileNavOpen(false); scrollToHero(); }}
               className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"

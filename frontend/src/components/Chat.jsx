@@ -181,7 +181,7 @@ export default function Chat() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* header */}
-      <div className="card p-3 sm:p-4 mb-4 flex items-center justify-between gap-3">
+      <div className="card p-3 sm:p-4 mb-4 flex items-center justify-between gap-3 sticky top-16 sm:top-[72px] z-40">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
             onClick={() => navigate(-1)}
@@ -240,7 +240,7 @@ export default function Chat() {
 
       {/* chat body */}
       <div className="card p-2 sm:p-3">
-        <div className="h-[64vh] sm:h-[60vh] overflow-auto p-2 sm:p-4 flex flex-col gap-3 bg-transparent rounded hide-scrollbar">
+        <div className="h-[55dvh] sm:h-[60vh] overflow-auto p-2 sm:p-4 flex flex-col gap-3 bg-transparent rounded hide-scrollbar">
           {loading ? (
             <div className="text-center text-white/60">Loading messages…</div>
           ) : (

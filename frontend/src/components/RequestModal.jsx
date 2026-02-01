@@ -75,7 +75,7 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 backdrop-blur"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
@@ -84,28 +84,28 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
         initial={{ y: 12, opacity: 0, scale: 0.995 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-        className="max-w-3xl w-full rounded-3xl bg-gradient-to-b from-[#0b1220] to-[#0f1724] border border-white/6 shadow-2xl p-6 lg:p-8 overflow-auto max-h-[90vh]"
+        className="max-w-3xl w-full rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0b1220] to-[#0f1724] border border-white/6 shadow-2xl p-4 sm:p-6 lg:p-8 overflow-auto max-h-[95dvh] sm:max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex flex-col sm:flex-row gap-6 sm:items-start">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-start">
           <div className="flex-shrink-0 self-center sm:self-auto">
-            <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-br from-primary to-accent-500">
-              <Avatar user={senior} size={88} />
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-br from-primary to-accent-500">
+              <Avatar user={senior} size={72} />
             </div>
           </div>
 
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-2xl font-bold text-white">{displayName(senior)}</h3>
-                <div className="text-sm text-white/60 mt-1">{senior.email || ''}</div>
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-xl sm:text-2xl font-bold text-white">{displayName(senior)}</h3>
+                <div className="text-xs sm:text-sm text-white/60 mt-1">{senior.email || ''}</div>
                 {computedYearOfStudy && (
-                  <div className="text-sm text-gray-400 mt-2">Year: <strong>{computedYearOfStudy}</strong></div>
+                  <div className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2">Year: <strong>{computedYearOfStudy}</strong></div>
                 )}
               </div>
             </div>
 
-            <p className="mt-4 text-sm text-white/70 max-w-2xl">
+            <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-white/70 max-w-2xl text-center sm:text-left">
               {senior.bio || 'No bio available.'}
             </p>
 
@@ -123,7 +123,7 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={`Hi ${displayName(senior).split(' ')[0] || 'there'}, I need help with ...`}
-                className="input w-full h-28 resize-none mt-2 bg-black/40 placeholder:text-white/50"
+                className="input w-full h-24 sm:h-28 resize-none mt-2 bg-black/40 placeholder:text-white/50"
                 maxLength={500}
                 aria-label={`Message to ${displayName(senior)}`}
               />

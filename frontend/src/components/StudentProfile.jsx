@@ -168,7 +168,32 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
     }
   }
 
-  const apiBase = import.meta?.env?.VITE_API_URL || 'http://localhost:5000';
+  async function deleteAvatar() {
+    if (!window.confirm('Are you sure you want to delete your profile photo?')) return;
+    setUploading(true);
+    try {
+      const res = await API.delete('/users/me/avatar');
+      const updated = res?.data?.user || null;
+      if (updated) {
+        setUser(updated);
+        refreshUser?.(updated);
+        setMessage('Avatar deleted.');
+      } else {
+        setMessage('Avatar deleted.');
+      }
+    } catch (err) {
+      console.error('delete avatar err', err);
+      setMessage(err?.response?.data?.error || 'Delete failed');
+    } finally {
+      setUploading(false);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  }
+
+  const apiBase =
+    import.meta?.env?.VITE_API_URL ||
+    import.meta?.env?.VITE_SOCKET_URL ||
+    'http://localhost:5000';
   const avatarSrc = user?.avatarUrl ? `${apiBase}${user.avatarUrl}` : null;
 
   return (
@@ -319,10 +344,20 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
             className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
           <button type="submit" disabled={uploading} className="btn btn-primary w-full sm:w-auto">
             {uploading ? 'Uploading…' : 'Upload Photo'}
           </button>
+          {user?.avatarUrl && (
+            <button 
+              type="button" 
+              onClick={deleteAvatar} 
+              disabled={uploading} 
+              className="btn btn-danger w-full sm:w-auto"
+            >
+              Delete Photo
+            </button>
+          )}
         </div>
       </form>
     </div>

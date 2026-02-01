@@ -10,7 +10,10 @@ export default function Avatar({ name, avatarUrl, user, size = 96 }) {
   const rawAvatarUrl =
     avatarUrl || user?.avatarUrl || user?.profilePhoto || null;
 
-  const apiBase = import.meta?.env?.VITE_API_URL || 'http://localhost:5000';
+  const apiBase =
+    import.meta?.env?.VITE_API_URL ||
+    import.meta?.env?.VITE_SOCKET_URL ||
+    'http://localhost:5000';
   const src = rawAvatarUrl
     ? (rawAvatarUrl.startsWith('http') ? rawAvatarUrl : `${apiBase}${rawAvatarUrl}`)
     : null;

@@ -881,6 +881,37 @@ app.post('/api/users/me/avatar', auth, upload.single('avatar'), async (req, res)
   }
 });
 
+app.delete('/api/users/me/avatar', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Delete file from disk if it exists
+    if (user.avatarUrl) {
+      const filePath = path.join(uploadsDir, path.basename(user.avatarUrl));
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    // Update user to remove avatar
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { avatarUrl: null },
+      { new: true }
+    ).select('-passwordHash');
+
+    res.json({
+      user: normalizeUserForClient(updated.toObject ? updated.toObject() : updated),
+      message: 'Avatar deleted'
+    });
+  } catch (err) {
+    console.error('avatar delete err', err && (err.stack || err));
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
 // ---------- HTTP server + socket.io ----------
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
