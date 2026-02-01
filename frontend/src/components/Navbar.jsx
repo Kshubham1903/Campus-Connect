@@ -233,20 +233,20 @@ export default function Navbar({ user, onLogout }) {
 
               {/* profile menu */}
               <div className="relative">
-                <div className="flex items-center gap-2 mr-2">
+                <div className="flex items-center gap-2 mr-0 sm:mr-2">
                   <button
                     onClick={() => setMenuOpen(o => !o)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl border surface hover:bg-primary/10 max-w-[210px]"
+                    className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl border surface hover:bg-primary/10 max-w-[140px] sm:max-w-[180px] md:max-w-[210px]"
                     aria-haspopup="true"
                     aria-expanded={menuOpen}
                     type="button"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-accent-500/12 flex items-center justify-center text-sm font-medium text-white/80 flex-shrink-0">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-primary/30 to-accent-500/12 flex items-center justify-center text-xs sm:text-sm font-medium text-white/80 flex-shrink-0">
                       {(user.name || user.email || 'U').slice(0, 2).toUpperCase()}
                     </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm text-white/85 truncate">{user.name || user.email}</span>
-                      <span className="text-xs text-white/60 truncate">{user.email}</span>
+                    <div className="flex flex-col min-w-0 overflow-hidden">
+                      <span className="text-xs sm:text-sm text-white/85 truncate">{user.name || user.email}</span>
+                      <span className="text-xs text-white/60 truncate hidden sm:block">{user.email}</span>
                     </div>
                   </button>
                 </div>

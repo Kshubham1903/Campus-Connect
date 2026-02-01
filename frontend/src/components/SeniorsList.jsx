@@ -56,41 +56,38 @@ function SeniorCard({ senior, onRequest }) {
       onClick={() => onRequest(senior)}
       className="card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-shadow duration-200 border border-transparent hover:border-white/5 cursor-pointer"
     >
-      <div className="flex gap-4">
+      <div className="flex gap-3 sm:gap-4">
         <div className="flex-shrink-0">
-          <Avatar user={senior} size={64} />
+          <Avatar user={senior} size={56} />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <div className="text-lg font-semibold text-white/95 truncate">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="text-base sm:text-lg font-semibold text-white/95 truncate">
                     {displayName(senior)}
                   </div>
-                <div className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-semibold">
+                <div className="text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary font-semibold whitespace-nowrap">
                   {senior.branch || senior.role || 'SENIOR'}
                 </div>
               </div>
-              <div className="text-sm text-white/60 truncate">{senior.email}</div>
+              <div className="text-xs sm:text-sm text-white/60 truncate">{senior.email}</div>
             </div>
 
-            <div className="flex flex-col items-end gap-2">
-              <div className="text-sm text-white/60">{senior.years || ''}</div>
-              <button
-                onClick={(e) => {
-                  // prevent the outer onClick firing when pressing the request button
-                  e.stopPropagation();
-                  onRequest(senior);
-                }}
-                className="px-3 py-1 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-95"
-              >
-                Request
-              </button>
-            </div>
+            <button
+              onClick={(e) => {
+                // prevent the outer onClick firing when pressing the request button
+                e.stopPropagation();
+                onRequest(senior);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs sm:text-sm font-medium hover:opacity-95 whitespace-nowrap flex-shrink-0"
+            >
+              Request
+            </button>
           </div>
 
-          <div className="mt-3 text-sm text-white/60">
+          <div className="mt-3 text-xs sm:text-sm text-white/60 line-clamp-2">
             {senior.bio || (
               <span className="text-white/50">
                 No bio provided — ask about specialization, availability, or experience.
