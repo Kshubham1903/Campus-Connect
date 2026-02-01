@@ -174,15 +174,14 @@ Browse available Students/Alumini and request help. Total:{' '}
 <strong>{seniors.length}</strong>
 </div>
 </div>
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
       <input
         placeholder="Search by name, skill, or email..."
         value={query}
         onChange={e => setQuery(e.target.value)}
-        className="input"
-        style={{ minWidth: 260 }}
+        className="input w-full sm:min-w-[260px]"
       />
-      <button onClick={fetchSeniors} className="btn btn-ghost">
+      <button onClick={fetchSeniors} className="btn btn-ghost w-full sm:w-auto">
         Refresh
       </button>
     </div>

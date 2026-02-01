@@ -181,8 +181,8 @@ export default function Chat() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* header */}
-      <div className="card p-2 mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="card p-3 sm:p-4 mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
             onClick={() => navigate(-1)}
             className="p-2 rounded-full hover:bg-white/5"
@@ -239,8 +239,8 @@ export default function Chat() {
       </div>
 
       {/* chat body */}
-      <div className="card p-3">
-        <div className="h-[64vh] overflow-auto p-4 flex flex-col gap-3 bg-transparent rounded hide-scrollbar">
+      <div className="card p-2 sm:p-3">
+        <div className="h-[64vh] sm:h-[60vh] overflow-auto p-2 sm:p-4 flex flex-col gap-3 bg-transparent rounded hide-scrollbar">
           {loading ? (
             <div className="text-center text-white/60">Loading messages…</div>
           ) : (

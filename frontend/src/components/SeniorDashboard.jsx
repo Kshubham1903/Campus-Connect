@@ -78,8 +78,8 @@ export default function SeniorDashboard() {
   }
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
-      <div className="card p-4 rounded-xl">
+    <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="card p-3 sm:p-4 rounded-xl">
         <h3 className="text-lg font-medium mb-3">Incoming Requests</h3>
         {incoming.length === 0 && (
           <div className="text-sm text-slate-400">No incoming requests</div>
@@ -108,18 +108,18 @@ export default function SeniorDashboard() {
 
               <div className="text-sm text-gray-200 mt-2">{r.message || ''}</div>
 
-              <div className="flex gap-2 mt-3">
+              <div className="flex flex-col sm:flex-row gap-2 mt-3">
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => respond(r._id, 'accept')}
-                  className="px-3 py-1 rounded bg-primary text-white btn-neon"
+                  className="px-3 py-2 rounded bg-primary text-white btn-neon w-full sm:w-auto"
                 >
                   Accept
                 </motion.button>
 
                 <motion.button
-                  className="px-3 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                  className="px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 w-full sm:w-auto"
                   onClick={() => {
                     if (!confirm('Decline this request?')) return;
                     handleDeclineRequest(r._id);
@@ -133,7 +133,7 @@ export default function SeniorDashboard() {
         </div>
       </div>
 
-      <div className="card p-4 rounded-xl">
+      <div className="card p-3 sm:p-4 rounded-xl">
         <h3 className="text-lg font-medium mb-3">My Chats</h3>
         {chats.length === 0 && (
           <div className="text-sm text-slate-400">No chats yet</div>

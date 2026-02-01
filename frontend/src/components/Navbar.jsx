@@ -8,6 +8,7 @@ import API, { getSavedToken } from '../api';
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const socketRef = useRef(null);
@@ -74,12 +75,14 @@ export default function Navbar({ user, onLogout }) {
       if (!containerRef.current.contains(e.target)) {
         setMenuOpen(false);
         setNotifOpen(false);
+        setMobileNavOpen(false);
       }
     }
     function onKey(e) {
       if (e.key === 'Escape') {
         setMenuOpen(false);
         setNotifOpen(false);
+        setMobileNavOpen(false);
       }
     }
     document.addEventListener('click', onDocClick);
@@ -156,7 +159,18 @@ export default function Navbar({ user, onLogout }) {
           )}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button
+            onClick={() => { setMobileNavOpen(o => !o); setMenuOpen(false); setNotifOpen(false); }}
+            className="md:hidden p-2 rounded-xl hover:bg-white/5"
+            aria-label="Open navigation"
+            aria-expanded={mobileNavOpen}
+            type="button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/90">
+              <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+          </button>
           {!user && (
             <button
               onClick={() => navigate('/login')}
@@ -265,6 +279,63 @@ export default function Navbar({ user, onLogout }) {
           )}
         </div>
       </div>
+      {mobileNavOpen && (
+        <div className="md:hidden border-t border-white/6 bg-black/80">
+          <div className="px-6 py-4 flex flex-col gap-2">
+            <button
+              onClick={() => { setMobileNavOpen(false); scrollToHero(); }}
+              className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+              type="button"
+            >
+              Home
+            </button>
+            {user && user.role === 'SENIOR' && (
+              <button
+                onClick={() => { setMobileNavOpen(false); navigate('/dashboard'); }}
+                className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+                type="button"
+              >
+                Dashboard
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => { setMobileNavOpen(false); navigate('/junior'); }}
+                className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+                type="button"
+              >
+                My Chats
+              </button>
+            )}
+            {user ? (
+              <button
+                onClick={() => { setMobileNavOpen(false); navigate('/profile'); }}
+                className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+                type="button"
+              >
+                Profile
+              </button>
+            ) : (
+              <button
+                onClick={() => { setMobileNavOpen(false); navigate('/login'); }}
+                className="text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
+                type="button"
+              >
+                Login / Signup
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => { setMobileNavOpen(false); onLogout && onLogout(); }}
+                className="text-left px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10"
+                type="button"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

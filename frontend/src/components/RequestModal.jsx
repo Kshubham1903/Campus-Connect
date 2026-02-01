@@ -87,8 +87,8 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
         className="max-w-3xl w-full rounded-3xl bg-gradient-to-b from-[#0b1220] to-[#0f1724] border border-white/6 shadow-2xl p-6 lg:p-8 overflow-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex gap-6">
-          <div className="flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-6 sm:items-start">
+          <div className="flex-shrink-0 self-center sm:self-auto">
             <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-br from-primary to-accent-500">
               <Avatar user={senior} size={88} />
             </div>
@@ -129,10 +129,10 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
               />
             </div>
 
-            <div className="mt-6 flex items-center gap-3 justify-end">
+            <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 justify-end">
               <button
                 onClick={onClose}
-                className="btn btn-ghost px-4"
+                className="btn btn-ghost px-4 w-full sm:w-auto"
                 disabled={sending}
               >
                 Cancel
@@ -140,7 +140,7 @@ export default function RequestModal({ senior = {}, onClose, onSent }) {
               <button
                 onClick={sendRequest}
                 disabled={!message.trim() || sending}
-                className="btn btn-primary px-6"
+                className="btn btn-primary px-6 w-full sm:w-auto"
               >
                 {sending ? 'Sending…' : 'Send Request'}
               </button>

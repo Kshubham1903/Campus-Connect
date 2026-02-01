@@ -22,6 +22,7 @@ export default function Avatar({ name, avatarUrl, user, size = 96 }) {
       <img
         src={src}
         alt={finalName || 'avatar'}
+        loading="lazy"
         className="rounded-full object-cover shadow-md"
         style={{ width: size, height: size }}
         onError={e => {

@@ -56,7 +56,7 @@ export default function Profile() {
       initial={{ opacity: 0, y: 16, scale: 0.995 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-      className="py-6"
+      className="py-4 sm:py-6 px-2 sm:px-0"
     >
       {isStudent ? (
         <StudentProfile user={user} refreshUser={setUser} />

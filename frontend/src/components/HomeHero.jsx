@@ -35,11 +35,11 @@ export default function HomeHero() {
 
   return (
     <section id="home-hero-section" className="w-full">
-      <div className="w-full card rounded-2xl p-8 lg:p-12 shadow-soft flex flex-col gap-10 items-stretch">
-        <div className="flex flex-col lg:flex-row gap-10 items-center justify-between">
+      <div className="w-full card rounded-2xl p-6 sm:p-8 lg:p-12 shadow-soft flex flex-col gap-8 sm:gap-10 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-8 sm:gap-10 items-center justify-between">
           <div className="flex-1 flex flex-col justify-center">
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white/95"
+              className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white/95"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05, duration: 0.45 }}
@@ -48,16 +48,16 @@ export default function HomeHero() {
               <span className="text-primary neon">get help, fast.</span>
             </motion.h1>
 
-            <p className="mt-4 max-w-2xl text-lg text-white/80">
+            <p className="mt-4 max-w-2xl text-base sm:text-lg text-white/80">
               CampusConnect pairs juniors with seniors from your college for fast doubt resolution,
               project guidance, and mentorship. Request help, get accepted, and chat instantly —
               all inside one elegant platform.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-3">
               <motion.button
                 onClick={goToSeniors}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold btn-neon"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold btn-neon w-full sm:w-auto"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label="Explore seniors"
@@ -67,7 +67,7 @@ export default function HomeHero() {
 
               <motion.button
                 onClick={() => navigate('/login')}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold border border-transparent bg-transparent hover:bg-primary/10 text-sm text-white/80 btn-ghost"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-semibold border border-transparent bg-transparent hover:bg-primary/10 text-sm text-white/80 btn-ghost w-full sm:w-auto"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.99 }}
                 aria-label="Login or Signup"
@@ -76,7 +76,7 @@ export default function HomeHero() {
               </motion.button>
             </div>
 
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-slate-500">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm text-slate-500">
               <div className="flex items-start gap-3">
                 <div className="font-semibold text-slate-200">Fast response</div>
                 <div className="text-gray-400">-  Connect within minutes</div>

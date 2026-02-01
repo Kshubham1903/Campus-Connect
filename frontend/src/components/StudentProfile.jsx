@@ -172,21 +172,21 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
   const avatarSrc = user?.avatarUrl ? `${apiBase}${user.avatarUrl}` : null;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="card flex items-start gap-6">
-        <div>
+    <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+      <div className="card flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+        <div className="w-full sm:w-auto flex justify-center sm:block">
           {avatarSrc ? (
-            <img src={avatarSrc} alt="avatar" className="w-28 h-28 rounded-xl object-cover" />
+            <img src={avatarSrc} alt="avatar" loading="lazy" className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover" />
           ) : previewSrc ? (
-            <img src={previewSrc} alt="preview" className="w-28 h-28 rounded-xl object-cover" />
+            <img src={previewSrc} alt="preview" className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover" />
           ) : (
-            <div className="w-28 h-28 rounded-xl surface border border-white/6 flex items-center justify-center font-bold text-xl text-white/80">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl surface border border-white/6 flex items-center justify-center font-bold text-lg sm:text-xl text-white/80">
               {(user?.name || user?.email || 'U').slice(0, 2).toUpperCase()}
             </div>
           )}
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 w-full sm:w-auto">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-lg font-semibold">{user?.name || user?.email}</div>
@@ -285,8 +285,8 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button type="submit" disabled={loading} className="btn btn-primary">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <button type="submit" disabled={loading} className="btn btn-primary w-full sm:w-auto">
             {loading ? 'Saving…' : 'Save changes'}
           </button>
           <button
@@ -301,25 +301,26 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
               setFile(null);
               setPreviewSrc(null);
             }}
-            className="btn btn-ghost"
+            className="btn btn-ghost w-full sm:w-auto"
           >
             Reset
           </button>
-          <div className="text-sm text-green-500">{message}</div>
+          {message && <div className="text-sm text-green-500 text-center sm:text-left">{message}</div>}
         </div>
       </form>
 
-      <form onSubmit={uploadAvatar} className="card flex items-center gap-4">
-        <div>
+      <form onSubmit={uploadAvatar} className="card flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        <div className="flex-1">
           <label className="text-sm block mb-1">Update photo</label>
           <input
             type="file"
             accept="image/*"
             onChange={e => setFile(e.target.files?.[0] || null)}
+            className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2 ml-auto">
-          <button type="submit" disabled={uploading} className="btn btn-primary">
+        <div className="flex items-center gap-2">
+          <button type="submit" disabled={uploading} className="btn btn-primary w-full sm:w-auto">
             {uploading ? 'Uploading…' : 'Upload Photo'}
           </button>
         </div>

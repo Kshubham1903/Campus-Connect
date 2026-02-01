@@ -181,9 +181,9 @@ async function respond(id, action) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
       {/* Incoming requests (for juniors) */}
-      <div className="lg:col-span-1 card p-4 rounded-xl">
+      <div className="lg:col-span-1 card p-3 sm:p-4 rounded-xl">
         <h3 className="text-lg font-semibold mb-3">Requests for You</h3>
         {incoming.length === 0 && (
           <div className="text-sm text-slate-400">No new requests.</div>
@@ -211,19 +211,19 @@ async function respond(id, action) {
 
               <div className="text-sm text-gray-200 mt-2">{r.message || ''}</div>
 
-              <div className="flex gap-2 mt-3">
+              <div className="flex flex-col sm:flex-row gap-2 mt-3">
                 <motion.button
   whileHover={{ scale: 1.03 }}
   whileTap={{ scale: 0.98 }}
   onClick={() => respond(r._id, 'accept')}
-  className="px-3 py-1 rounded bg-primary text-white btn-neon"
+  className="px-3 py-2 rounded bg-primary text-white btn-neon w-full sm:w-auto"
   disabled={processingId === r._id}
 >
   {processingId === r._id ? 'Accepting…' : 'Accept'}
 </motion.button>
 
                 <motion.button
-                  className="px-3 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                  className="px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 w-full sm:w-auto"
                   onClick={() => {
                     if (!confirm('Decline this request?')) return;
                     handleDeclineRequest(r._id);
@@ -238,7 +238,7 @@ async function respond(id, action) {
       </div>
 
       {/* Your outgoing requests */}
-      <div className="card p-4 rounded-xl">
+      <div className="card p-3 sm:p-4 rounded-xl">
         <h3 className="text-lg font-semibold mb-3">Your Requests</h3>
         {outgoing.length === 0 && (
           <div className="text-sm text-slate-400">No requests sent yet.</div>

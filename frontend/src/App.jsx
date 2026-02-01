@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
@@ -6,13 +6,22 @@ import API, { getSavedToken, setAuthToken } from './api';
 import Navbar from './components/Navbar';
 import Layout from './components/Layout';
 import HomeHero from './components/HomeHero';
-import SeniorsList from './components/SeniorsList';
 import Login from './components/Login';
-import SeniorDashboard from './components/SeniorDashboard';
-import JuniorDashboard from './components/JuniorDashboard';
-import Chat from './components/Chat';
-import Profile from './components/Profile';
-import CompleteProfilePrompt from './components/CompleteProfilePrompt';
+
+// Lazy load components for code splitting
+const SeniorsList = lazy(() => import('./components/SeniorsList'));
+const SeniorDashboard = lazy(() => import('./components/SeniorDashboard'));
+const JuniorDashboard = lazy(() => import('./components/JuniorDashboard'));
+const Chat = lazy(() => import('./components/Chat'));
+const Profile = lazy(() => import('./components/Profile'));
+const CompleteProfilePrompt = lazy(() => import('./components/CompleteProfilePrompt'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center p-8">
+    <div className="text-gray-400">Loading...</div>
+  </div>
+);
 
 export default function App() {
 const navigate = useNavigate();
@@ -82,26 +91,29 @@ return (
 <Toaster position="top-right" />
 <Navbar user={user} onLogout={handleLogout} />
       {showProfilePrompt && (
-        <CompleteProfilePrompt
-          user={user}
-          onClose={(info) => {
-            // mark skip so we don't prompt again
-            try {
-              const key = `mc_profile_prompt_shown_${user?._id}`;
-              if (typeof window !== 'undefined') localStorage.setItem(key, '1');
-            } catch (e) {}
-            setShowProfilePrompt(false);
-          }}
-          onComplete={() => {
-            try {
-              const key = `mc_profile_prompt_shown_${user?._id}`;
-              if (typeof window !== 'undefined') localStorage.setItem(key, '1');
-            } catch (e) {}
-            setShowProfilePrompt(false);
-            navigate('/profile');
-          }}
-        />
+        <Suspense fallback={<LoadingFallback />}>
+          <CompleteProfilePrompt
+            user={user}
+            onClose={(info) => {
+              // mark skip so we don't prompt again
+              try {
+                const key = `mc_profile_prompt_shown_${user?._id}`;
+                if (typeof window !== 'undefined') localStorage.setItem(key, '1');
+              } catch (e) {}
+              setShowProfilePrompt(false);
+            }}
+            onComplete={() => {
+              try {
+                const key = `mc_profile_prompt_shown_${user?._id}`;
+                if (typeof window !== 'undefined') localStorage.setItem(key, '1');
+              } catch (e) {}
+              setShowProfilePrompt(false);
+              navigate('/profile');
+            }}
+          />
+        </Suspense>
       )}
+<Suspense fallback={<LoadingFallback />}>
 <Routes>
 <Route
 path="/login"
@@ -153,6 +165,7 @@ element={
 }
 />
 </Routes>
+</Suspense>
 </>
 );
 }
