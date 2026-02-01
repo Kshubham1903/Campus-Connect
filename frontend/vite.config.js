@@ -17,13 +17,6 @@ export default defineConfig({
     },
     // Optimize chunk size
     chunkSizeWarningLimit: 600,
-    // Enable minification
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-      },
-    },
   },
   // Optimize dependency pre-bundling
   optimizeDeps: {
