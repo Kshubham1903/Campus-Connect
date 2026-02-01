@@ -14,7 +14,7 @@ export default function CompleteProfilePrompt({ user, onClose, onComplete }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-60 flex items-center justify-center p-6 bg-black/70 backdrop-blur backdrop-filter"
+      className="fixed inset-0 z-60 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur backdrop-filter"
       onClick={() => onClose?.({ skipped: true })}
       aria-modal="true"
       role="dialog"
@@ -23,22 +23,22 @@ export default function CompleteProfilePrompt({ user, onClose, onComplete }) {
         initial={{ y: 16, scale: 0.98, opacity: 0 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-        className="max-w-3xl w-full rounded-3xl bg-gradient-to-b from-[#0b1220] to-[#0f1724] border border-white/6 shadow-2xl p-6 lg:p-8"
+        className="max-w-3xl w-full rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0b1220] to-[#0f1724] border border-white/6 shadow-2xl p-4 sm:p-6 lg:p-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start gap-6">
-          <div className="flex-shrink-0">
-            <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-br from-primary to-accent-500">
+        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+          <div className="flex-shrink-0 mx-auto sm:mx-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-br from-primary to-accent-500">
               <div className="w-full h-full rounded-full bg-black/80 flex items-center justify-center text-white text-xl font-semibold">
                 {initials(user)}
               </div>
             </div>
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <div className="flex items-center justify-between gap-4">
-              <div>
-                <h3 className="text-2xl font-bold text-white">Welcome, {name}!</h3>
+              <div className="text-center sm:text-left flex-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Welcome, {name}!</h3>
                 <div className="text-sm text-white/60 mt-1">{subtitle}</div>
               </div>
               <button
@@ -53,7 +53,7 @@ export default function CompleteProfilePrompt({ user, onClose, onComplete }) {
               </button>
             </div>
 
-            <p className="mt-4 text-sm text-white/70 max-w-xl">
+            <p className="mt-4 text-sm text-white/70 max-w-xl text-center sm:text-left">
               A complete profile increases your chances to get helpful responses — add your skills, a short bio, and where you're headed.
             </p>
 
@@ -88,16 +88,16 @@ export default function CompleteProfilePrompt({ user, onClose, onComplete }) {
               </li>
             </ul>
 
-            <div className="mt-6 flex items-center gap-3 justify-end">
+            <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 sm:justify-end">
               <button
-                className="btn btn-ghost text-sm px-4 py-2"
+                className="btn btn-ghost text-sm px-4 py-2 w-full sm:w-auto"
                 onClick={() => onClose?.({ skipped: true })}
               >
                 Skip for now
               </button>
 
               <button
-                className="btn btn-primary px-5 py-2 text-sm"
+                className="btn btn-primary px-5 py-2 text-sm w-full sm:w-auto"
                 onClick={() => onComplete?.()}
               >
                 Complete profile

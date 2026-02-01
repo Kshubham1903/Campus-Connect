@@ -72,8 +72,8 @@ try {
 }
 
 return (
-<div className="max-w-md w-full card rounded-xl shadow-soft p-6">
-<h3 className="text-xl font-semibold mb-4 text-white/95">
+<div className="max-w-md w-full card rounded-xl shadow-soft p-4 sm:p-6">
+<h3 className="text-lg sm:text-xl font-semibold mb-4 text-white/95">
 {mode === 'login' ? 'Login' : 'Create account'}
 </h3>
 <form onSubmit={submit} className="space-y-3">
@@ -130,8 +130,8 @@ placeholder="Your name"
 
     {error && <div className="text-sm text-red-600">{error}</div>}
 
-    <div className="flex items-center justify-between gap-3">
-      <button type="submit" className="btn btn-primary" disabled={loading}>
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-between gap-3">
+      <button type="submit" className="btn btn-primary w-full sm:w-auto" disabled={loading}>
         {loading
           ? (mode === 'login' ? 'Logging in…' : 'Creating…')
           : (mode === 'login' ? 'Login' : 'Create account')}
@@ -139,13 +139,13 @@ placeholder="Your name"
 
       <button
         type="button"
-        className="btn btn-ghost"
+        className="btn btn-ghost w-full sm:w-auto text-sm"
         onClick={() => {
           setMode(mode === 'login' ? 'signup' : 'login');
           setError('');
         }}
       >
-        {mode === 'login' ? 'Create account' : 'Have an account? Login'}
+        {mode === 'login' ? 'Create account' : 'Login'}
       </button>
     </div>
 
