@@ -861,37 +861,59 @@ const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
 app.post('/api/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
   try {
+    console.log('Avatar upload started for user:', req.user.id);
+    console.log('File received:', req.file ? `${req.file.filename} (${req.file.size} bytes)` : 'No file');
+    
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    
     const userId = req.user.id;
     const avatarPath = `/uploads/${req.file.filename}`;
+    console.log('Avatar path:', avatarPath);
+    
     const user = await User.findByIdAndUpdate(
       userId,
       { avatarUrl: avatarPath },
       { new: true }
     ).select('-passwordHash');
+    
     if (!user) return res.status(404).json({ error: 'User not found' });
-
+    
+    console.log('Avatar upload successful for user:', userId);
     res.json({
       user: normalizeUserForClient(user.toObject ? user.toObject() : user),
       avatarUrl: avatarPath
     });
   } catch (err) {
-    console.error('avatar upload err', err && (err.stack || err));
-    res.status(500).json({ error: 'server error' });
+    console.error('avatar upload err - full:', err);
+    console.error('avatar upload err - message:', err?.message);
+    console.error('avatar upload err - stack:', err?.stack);
+    res.status(500).json({ error: err?.message || 'server error', details: String(err) });
   }
 });
 
 app.delete('/api/users/me/avatar', auth, async (req, res) => {
   try {
+    console.log('DELETE /api/users/me/avatar called by user:', req.user.id);
     const userId = req.user.id;
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    console.log('Current avatarUrl:', user.avatarUrl);
+
     // Delete file from disk if it exists
     if (user.avatarUrl) {
-      const filePath = path.join(uploadsDir, path.basename(user.avatarUrl));
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      try {
+        const filePath = path.join(uploadsDir, path.basename(user.avatarUrl));
+        console.log('Attempting to delete file:', filePath);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log('File deleted successfully');
+        } else {
+          console.log('File does not exist:', filePath);
+        }
+      } catch (fileErr) {
+        console.warn('warning: could not delete file', fileErr && (fileErr.stack || fileErr));
+        // Don't fail the entire request if file deletion fails
       }
     }
 
@@ -902,13 +924,17 @@ app.delete('/api/users/me/avatar', auth, async (req, res) => {
       { new: true }
     ).select('-passwordHash');
 
+    console.log('User avatar cleared, updated avatarUrl:', updated.avatarUrl);
+
     res.json({
       user: normalizeUserForClient(updated.toObject ? updated.toObject() : updated),
       message: 'Avatar deleted'
     });
   } catch (err) {
-    console.error('avatar delete err', err && (err.stack || err));
-    res.status(500).json({ error: 'server error' });
+    console.error('avatar delete err - full error:', err);
+    console.error('avatar delete err - message:', err?.message);
+    console.error('avatar delete err - stack:', err?.stack);
+    res.status(500).json({ error: err?.message || 'server error', details: String(err) });
   }
 });
 

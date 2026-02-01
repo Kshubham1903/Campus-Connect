@@ -160,6 +160,55 @@ export default function Navbar({ user, onLogout }) {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-4">
+          {user && (
+            <div className="relative md:hidden">
+              <button
+                onClick={() => { setNotifOpen(o => !o); setMenuOpen(false); setMobileNavOpen(false); }}
+                className="p-2 rounded-xl hover:bg-white/3"
+                aria-haspopup="true"
+                aria-expanded={notifOpen}
+                aria-label="Notifications"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/90">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" />
+                </svg>
+                {unread > 0 && (
+                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs rounded-full bg-red-500 text-white">
+                    {unread}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute right-0 top-full translate-y-2 mt-2 w-72 sm:w-80 rounded-xl shadow-lg border p-2 z-50 modal card-pop bg-black/90"
+                  style={{ transformOrigin: 'right top' }}
+                >
+                  <div className="flex items-center justify-between px-2 pb-2">
+                    <div className="text-sm font-semibold">Notifications</div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={markAllRead} className="text-xs text-white/70 hover:text-white/90">Mark all read</button>
+                      <button onClick={() => setNotifOpen(false)} className="text-xs text-white/70 hover:text-white/90">Close</button>
+                    </div>
+                  </div>
+
+                  <div className="max-h-64 overflow-auto space-y-2">
+                    {notifications.length === 0 && (
+                      <div className="px-3 py-4 text-sm text-white/60">No notifications</div>
+                    )}
+                    {notifications.map(n => (
+                      <div key={n._id} className={`px-3 py-2 rounded-md ${n.read ? 'bg-transparent' : 'bg-white/5'}`}>
+                        <div className="text-sm font-medium">{n.message || 'Notification'}</div>
+                        <div className="text-xs text-white/70">{n.meta?.text || n.meta?.message || (n.createdAt ? new Date(n.createdAt).toLocaleString() : '')}</div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          )}
           <button
             onClick={() => { setMobileNavOpen(o => !o); setMenuOpen(false); setNotifOpen(false); }}
             className="md:hidden p-2 rounded-xl hover:bg-white/5"
@@ -295,19 +344,7 @@ export default function Navbar({ user, onLogout }) {
                   </div>
                 </div>
 
-                {/* Notifications in mobile menu */}
-                <button
-                  onClick={() => { setMobileNavOpen(false); setNotifOpen(true); }}
-                  className="flex items-center justify-between text-left px-3 py-2 rounded-lg text-sm text-white/90 hover:bg-white/5"
-                  type="button"
-                >
-                  <span>Notifications</span>
-                  {unread > 0 && (
-                    <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
-                      {unread}
-                    </span>
-                  )}
-                </button>
+                {/* Notifications button removed - now appears in mobile header near menu */}
               </>
             )}
             <button

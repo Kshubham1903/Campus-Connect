@@ -144,11 +144,13 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
     if (!file) return alert('Choose an image first');
     setUploading(true);
     try {
+      console.log('Uploading avatar:', file.name, 'Size:', file.size, 'Type:', file.type);
       const fd = new FormData();
       fd.append('avatar', file);
       const res = await API.post('/users/me/avatar', fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      console.log('Upload response:', res);
       const updated = res?.data?.user || null;
       if (updated) {
         setUser(updated);
@@ -160,8 +162,11 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
         setMessage('Avatar uploaded (no user returned).');
       }
     } catch (err) {
-      console.error('upload avatar err', err);
-      setMessage(err?.response?.data?.error || 'Upload failed');
+      console.error('upload avatar err - full:', err);
+      console.error('upload avatar err - response:', err?.response);
+      console.error('upload avatar err - data:', err?.response?.data);
+      const errorMsg = err?.response?.data?.error || err?.message || 'Upload failed';
+      setMessage(errorMsg);
     } finally {
       setUploading(false);
       setTimeout(() => setMessage(''), 3000);
@@ -172,7 +177,9 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
     if (!window.confirm('Are you sure you want to delete your profile photo?')) return;
     setUploading(true);
     try {
+      console.log('Calling DELETE /users/me/avatar');
       const res = await API.delete('/users/me/avatar');
+      console.log('Delete response:', res);
       const updated = res?.data?.user || null;
       if (updated) {
         setUser(updated);
@@ -182,8 +189,11 @@ export default function StudentProfile({ user: initialUser, refreshUser }) {
         setMessage('Avatar deleted.');
       }
     } catch (err) {
-      console.error('delete avatar err', err);
-      setMessage(err?.response?.data?.error || 'Delete failed');
+      console.error('delete avatar err - full:', err);
+      console.error('delete avatar err - response:', err?.response);
+      console.error('delete avatar err - data:', err?.response?.data);
+      const errorMsg = err?.response?.data?.error || err?.message || 'Delete failed';
+      setMessage(errorMsg);
     } finally {
       setUploading(false);
       setTimeout(() => setMessage(''), 3000);
