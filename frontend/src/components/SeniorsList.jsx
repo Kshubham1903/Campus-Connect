@@ -54,7 +54,7 @@ function SeniorCard({ senior, onRequest }) {
   return (
     <div
       onClick={() => onRequest(senior)}
-      className="card rounded-2xl p-5 hover:shadow-lg transition-shadow duration-200 border border-transparent hover:border-white/5 cursor-pointer"
+      className="card rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-shadow duration-200 border border-transparent hover:border-white/5 cursor-pointer"
     >
       <div className="flex gap-4">
         <div className="flex-shrink-0">
@@ -165,21 +165,21 @@ setSelected(null);
 }
 
 return (
-<div id="seniors-section" className="w-full space-y-6">
+<div id="seniors-section" className="w-full space-y-4 sm:space-y-6">
 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 <div>
-<h2 className="text-2xl font-semibold">Seniors</h2>
-<div className="text-sm text-gray-300 mt-1">
-Browse available Students/Alumini and request help. Total:{' '}
+<h2 className="text-xl sm:text-2xl font-semibold">Seniors</h2>
+<div className="text-xs sm:text-sm text-gray-300 mt-1">
+Browse available Students/Alumni and request help. Total:{' '}
 <strong>{seniors.length}</strong>
 </div>
 </div>
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
       <input
-        placeholder="Search by name, skill, or email..."
+        placeholder="Search by name, skill, email..."
         value={query}
         onChange={e => setQuery(e.target.value)}
-        className="input w-full sm:min-w-[260px]"
+        className="input w-full sm:min-w-[300px] md:min-w-[320px]"
       />
       <button onClick={fetchSeniors} className="btn btn-ghost w-full sm:w-auto">
         Refresh
@@ -188,7 +188,7 @@ Browse available Students/Alumini and request help. Total:{' '}
   </div>
 
   {loading ? (
-    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="surface animate-pulse p-6 rounded-2xl h-44" />
       ))}
@@ -196,7 +196,7 @@ Browse available Students/Alumini and request help. Total:{' '}
   ) : filtered.length === 0 ? (
     <div className="text-gray-400">No seniors found.</div>
   ) : (
-    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {filtered.map(s => (
         <SeniorCard key={s._id} senior={s} onRequest={handleRequestClick} />
       ))}
