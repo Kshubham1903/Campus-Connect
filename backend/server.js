@@ -21,16 +21,24 @@ const chatRoutes = require('./routes/chat');
 const app = express();
 
 // CORS configuration for production
+const envOrigins = (process.env.FRONTEND_URLS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  process.env.FRONTEND_URL
+  process.env.FRONTEND_URL,
+  ...envOrigins,
 ].filter(Boolean);
 
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
+    const hasExplicitAllowList = allowedOrigins.length > 0;
+    if (!hasExplicitAllowList) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {

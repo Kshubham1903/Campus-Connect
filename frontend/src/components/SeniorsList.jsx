@@ -133,7 +133,7 @@ const res = await API.get('/seniors');
 const arr = Array.isArray(res.data) ? res.data : res.data?.seniors || [];
 setSeniors(arr);
 } catch (err) {
-console.error('load seniors', err);
+console.error('load seniors error:', err.message, err.response?.status, err.response?.data);
 setSeniors([]);
 } finally {
 setLoading(false);
